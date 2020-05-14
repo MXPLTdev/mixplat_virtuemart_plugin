@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
+    <name>Mixplat Payment</name>
+    <creationDate>April 2020</creationDate>
+    <author>ООО «Миксплат Процессинг»</author>
+    <authorUrl>https://mixplat.ru/</authorUrl>
+    <copyright>ООО «Миксплат Процессинг» ©</copyright>
+    <license></license>
+    <version>1.0.0</version>
+    <description>Приём оплаты по карте и мобильные платежи</description>
+    <languages>
+    </languages>
+    <files>
+	<filename plugin="mixplat">mixplat.php</filename>
+	<filename>index.html</filename>
+    <filename>mixplatpayment.png</filename>
+    <folder>mixplat</folder>
+    </files>
+    <vmconfig>
+        <fields name="params">
+            <fieldset name="basic" addfieldpath="/administrator/components/com_virtuemart/fields">
+                <field type="vmtitle" default="Основные параметры"/>
+	<field	name="payment_logos" type="vmfiles" label="Логотип"
+		description="из папки /plugins/vmpayment/mixplat/"
+		directory="/plugins/vmpayment/mixplat"
+		default="mixplatpayment.png" hide_default="1"
+		stripext="0" exclude="php|xml" />
+ 	<field type="text" name="api_key"  size="50" label="API key"
+             default="" description="" />
+    <field type="text" name="project_id"  size="50" label="Id проекта"
+             default="" description="" />
+    <field type="text" name="form_id"  size="50" label="Id платежной формы"
+             default="" description="" />
+    <field type="list" name="test_mode" default="1" label="Режим работы" description="">
+        <option value="1">Тестовый</option>
+        <option value="0">Рабочий</option>
+    </field>
+    <field type="list" name="payment_type" default="0" label="Тип оплаты" description="">
+        <option value="0">Все доступные</option>
+		<option value="mobile">Оплата со счёта телефона</option>
+		<option value="card">Банковские карты</option>
+        <option value="wallet">Электронные кошельки</option>
+        <option value="bank">Выставление счёта в банк-клиент</option>
+     </field>
+    <field name="paymentDescription" type="textarea" label="Описание платежа" description="Описание будет видно в ЛК, можно использовать %order_number% и %email% для замены на реальные значения в описании" default="Оплата заказа №%order_number%"/>
+     <field name="order_status" type="vmorderstate" scope="com_virtuemart" default="P" label="Статус заказа после оформления" description="" />
+     <field name="status_success" type="vmorderstate" scope="com_virtuemart" default="C" label="Статус оплаченного заказа" description="" />
+     <field name="status_for_payment" type="vmorderstate" scope="com_virtuemart" default="P" label="Статус для оплаты" description="Оплата заказа будет доступнка при утсановке этого статуса у заказа (отложенная оплата)" />
+    <field name="payment_message" type="textarea" label="Сообщение после оформления заказа" description="Для отложенной оплаты, будет показано если статус для оплаты не будет совпадать со статусом заказа после оформления"/>
+    <field type="list" name="hold" default="sms" label="Сценарий работы" description="">
+        <option value="dms">Двухэтапные платежи</option>
+        <option value="sms">Одноэтапные платежи</option>
+     </field>
+     <field name="confirm_status" type="vmorderstate" scope="com_virtuemart" default="F" label="Статус заказа для подтверждения оплаты" description="Если включено холдирование, то будет произведён зачёт предавторизованной суммы, равный стоимости заказа" />
+     <field name="cancel_status" type="vmorderstate" scope="com_virtuemart" default="R" label="Статус заказа для отмены оплаты" description="Если включено холдирование, то будет произведён возврат, либо отмена предавторизованной суммы" />
+    <field type="vmtitle" default="Печать чеков"/>
+    <field type="list" name="sendReceipt" default="0" label="Отправлять чеки" description="">
+        <option value="1">JYES</option>
+        <option value="0">JNO</option>
+     </field>
+     <field type="list" name="tax_system" label="Система налогооблажения" default="1">
+        <option value="1">общая СН</option>
+        <option value="2">упрощенная СН (доходы)</option>
+        <option value="3">упрощенная СН (доходы минус расходы)</option>
+        <option value="4">единый налог на вмененный доход</option>
+        <option value="5">единый сельскохозяйственный налог</option>
+        <option value="6">патентная СН</option>
+     </field>
+     <field type="list" name="tax" label="Ставка НДС на товары" default="1">
+        <option value="1">без НДС</option>
+        <option value="2">НДС по ставке 0%</option>
+        <option value="3">НДС чека по ставке 10%</option>
+        <option value="4">НДС чека по ставке 20%</option>
+        <option value="5">НДС чека по расчетной ставке 10/110</option>
+        <option value="6">НДС чека по расчетной ставке 20/120</option>
+     </field>
+     <field type="list" name="tax_delivery" label="Ставка НДС на доставку" default="1">
+        <option value="1">без НДС</option>
+        <option value="2">НДС по ставке 0%</option>
+        <option value="3">НДС чека по ставке 10%</option>
+        <option value="4">НДС чека по ставке 20%</option>
+        <option value="5">НДС чека по расчетной ставке 10/110</option>
+        <option value="6">НДС чека по расчетной ставке 20/120</option>
+     </field>
+     <field type="list" name="paymentSubjectType" default="commodity" label="Признак предмета расчета" description="категория товара для налоговой">
+        <option value="commodity">товар</option>
+        <option value="excise">подакцизный товар</option>
+        <option value="job">работа</option>
+        <option value="service">услуга</option>
+        <option value="gambling_bet">ставка в азартной игре</option>
+        <option value="gambling_prize">выигрыш в азартной игре</option>
+        <option value="lottery">лотерейный билет</option>
+        <option value="lottery_prize">выигрыш в лотерею</option>
+        <option value="intellectual_activity">результаты интеллектуальной деятельности</option>
+        <option value="payment">платеж</option>
+        <option value="agent_commission">агентское вознаграждение</option>
+        <option value="composite">несколько вариантов</option>
+        <option value="another">другое</option>
+     </field>
+     <field type="list" name="deliveryPaymentSubjectType" default="service" label="Признак предмета расчета на доставку" description="">
+        <option value="commodity">товар</option>
+        <option value="excise">подакцизный товар</option>
+        <option value="job">работа</option>
+        <option value="service">услуга</option>
+        <option value="gambling_bet">ставка в азартной игре</option>
+        <option value="gambling_prize">выигрыш в азартной игре</option>
+        <option value="lottery">лотерейный билет</option>
+        <option value="lottery_prize">выигрыш в лотерею</option>
+        <option value="intellectual_activity">результаты интеллектуальной деятельности</option>
+        <option value="payment">платеж</option>
+        <option value="agent_commission">агентское вознаграждение</option>
+        <option value="composite">несколько вариантов</option>
+        <option value="another">другое</option>
+     </field>
+     <field type="list" name="paymentMethodType" default="full_payment" label="Признак способа расчета" description="категория способа оплаты для налоговой">
+        <option value="full_prepayment">полная предоплата</option>
+        <option value="partial_prepayment">частичная предоплата</option>
+        <option value="advance">аванс</option>
+        <option value="full_payment">полный расчет</option>
+        <option value="partial_payment">частичный расчет и кредит</option>
+        <option value="credit">кредит</option>
+        <option value="credit_payment">выплата по кредиту</option>
+     </field>
+    <field type="vmtitle" default="Остальные"/>
+    <field type="list" name="allowAll" default="0" label="Разрешить уведомления только с ip-адресов Mixplat" description="">
+        <option value="1">Только с Mixplat</option>
+        <option value="0">Без ограничений</option>
+    </field>
+    <field name="mixplatIpList" type="textarea" label="Список IP адресов Mixplat" description="Список разрешённых ip, с которых принимаются уведомления о изменениях статуса оплаты. Каждый ip на новой строке" default="185.77.233.27
+185.77.233.29"/>
+	<field name="countries" type="vmcountries"  scope="com_virtuemart" default="" label="Страны" description="Доступно для выбранных стран"/>
+    <field name="payment_currency" type="vmacceptedcurrency" default="" label="Валюта" description="" />
+    <field type="vmcategories" name="categories" label="Запрещённые категории"
+             default="" description="Для которых данный способ оплаты не доступен" multiple="true"/>
+	<field name="min_amount" type="text"  label="Минимальная сумма заказа" description="" />
+	<field name="max_amount" type="text"  label="Максимальная сумма заказа" description="" />
+	<field name="cost_per_transaction" type="text"  label="Наценка" description="" />
+	<field name="cost_percent_total" type="text"  label="Наценка(%)" description="" />
+	<field name="tax_id" type="vmtaxes" scope="com_virtuemart"  label="Налоги" description="" />
+    </fieldset>
+
+    </fields>
+</vmconfig>
+<params addpath="/administrator/components/com_virtuemart/elements">
+    <param type="vmjpluginwarning" />
+    <param  name="payment_logos" type="vmfiles" label="Логотип"
+        description="из папки /plugins/vmpayment/mixplat/"
+        directory="/plugins/vmpayment/mixplat"
+        default="" hide_default="1"
+        stripext="0" exclude="php|xml" />
+    <param type="text" name="api_key"  size="50" label="API key"
+             default="" description="" />
+    <param type="text" name="project_id"  size="50" label="Id проекта"
+             default="" description="" />
+    <param type="text" name="form_id"  size="50" label="Id платежной формы"
+             default="" description="" />
+    <param type="list" name="test_mode" default="1" label="Режим работы" description="">
+        <option value="1">Тестовый</option>
+        <option value="0">Рабочий</option>
+    </param>
+    <param type="list" name="payment_type" default="0" label="Тип оплаты" description="">
+        <option value="0">Все доступные</option>
+        <option value="mobile">Оплата со счёта телефона</option>
+        <option value="card">Банковские карты</option>
+        <option value="wallet">Электронные кошельки</option>
+        <option value="bank">Выставление счёта в банк-клиент</option>
+    </param>
+    <param name="paymentDescription" type="textarea" label="Описание платежа" description="Описание будет видно в ЛК, можно использовать %order_number% и %email% для замены на реальные значения в описании" default="Оплата заказа №%order_number%"/>
+     <param name="order_status" type="vmorderstate" scope="com_virtuemart" default="P" label="Статус заказа после оформления" description="" />
+     <param name="status_success" type="vmorderstate" scope="com_virtuemart" default="C" label="Статус оплаченного заказа" description="" />
+     <param name="status_for_payment" type="vmorderstate" scope="com_virtuemart" default="P" label="Статус для оплаты" description="Оплата заказа будет доступнка при утсановке этого статуса у заказа (отложенная оплата)" />
+    <param name="payment_message" type="textarea" label="Сообщение после оформления заказа" description="Для отложенной оплаты, будет показано если статус для оплаты не будет совпадать со статусом заказа после оформления"/>
+    <param type="vmtitle" default="Холдирование"/>
+        <param type="list" name="hold" default="sms" label="Сценарий работы" description="">
+        <option value="dms">Двухэтапные платежи</option>
+        <option value="sms">Одноэтапные платежи</option>
+     </param>
+     <param name="confirm_status" type="vmorderstate" scope="com_virtuemart" default="F" label="Статус заказа для подтверждения оплаты" description="Если включены двухэтапные платежи, то будет произведён зачёт предавторизованной суммы, равный стоимости заказа" />
+     <param name="cancel_status" type="vmorderstate" scope="com_virtuemart" default="R" label="Статус заказа для отмены оплаты" description="Если включено двухэтапные платежи, то будет произведён возврат, либо отмена предавторизованной суммы" />
+    <param type="list" name="sendReceipt" default="0" label="Отправлять чеки" description="">
+        <option value="1">JYES</option>
+        <option value="0">JNO</option>
+     </param>
+     <param type="list" name="tax_system" label="Система налогооблажения" default="1">
+        <option value="1">общая СН</option>
+        <option value="2">упрощенная СН (доходы)</option>
+        <option value="3">упрощенная СН (доходы минус расходы)</option>
+        <option value="4">единый налог на вмененный доход</option>
+        <option value="5">единый сельскохозяйственный налог</option>
+        <option value="6">патентная СН</option>
+     </param>
+     <param type="list" name="tax" label="Ставка НДС на товары" default="1">
+        <option value="1">без НДС</option>
+        <option value="2">НДС по ставке 0%</option>
+        <option value="3">НДС чека по ставке 10%</option>
+        <option value="4">НДС чека по ставке 20%</option>
+        <option value="5">НДС чека по расчетной ставке 10/110</option>
+        <option value="6">НДС чека по расчетной ставке 20/120</option>
+     </param>
+     <param type="list" name="tax_delivery" label="Ставка НДС на доставку" default="1">
+        <option value="1">без НДС</option>
+        <option value="2">НДС по ставке 0%</option>
+        <option value="3">НДС чека по ставке 10%</option>
+        <option value="4">НДС чека по ставке 20%</option>
+        <option value="5">НДС чека по расчетной ставке 10/110</option>
+        <option value="6">НДС чека по расчетной ставке 20/120</option>
+     </param>
+     <param type="list" name="paymentSubjectType" default="commodity" label="Признак предмета расчета" description="категория товара для налоговой">
+        <option value="commodity">товар</option>
+        <option value="excise">подакцизный товар</option>
+        <option value="job">работа</option>
+        <option value="service">услуга</option>
+        <option value="gambling_bet">ставка в азартной игре</option>
+        <option value="gambling_prize">выигрыш в азартной игре</option>
+        <option value="lottery">лотерейный билет</option>
+        <option value="lottery_prize">выигрыш в лотерею</option>
+        <option value="intellectual_activity">результаты интеллектуальной деятельности</option>
+        <option value="payment">платеж</option>
+        <option value="agent_commission">агентское вознаграждение</option>
+        <option value="composite">несколько вариантов</option>
+        <option value="another">другое</option>
+     </param>
+     <param type="list" name="deliveryPaymentSubjectType" default="service" label="Признак предмета расчета на доставку" description="">
+        <option value="commodity">товар</option>
+        <option value="excise">подакцизный товар</option>
+        <option value="job">работа</option>
+        <option value="service">услуга</option>
+        <option value="gambling_bet">ставка в азартной игре</option>
+        <option value="gambling_prize">выигрыш в азартной игре</option>
+        <option value="lottery">лотерейный билет</option>
+        <option value="lottery_prize">выигрыш в лотерею</option>
+        <option value="intellectual_activity">результаты интеллектуальной деятельности</option>
+        <option value="payment">платеж</option>
+        <option value="agent_commission">агентское вознаграждение</option>
+        <option value="composite">несколько вариантов</option>
+        <option value="another">другое</option>
+     </param>
+     <param type="list" name="paymentMethodType" default="full_payment" label="Признак способа расчета" description="категория способа оплаты для налоговой">
+        <option value="full_prepayment">полная предоплата</option>
+        <option value="partial_prepayment">частичная предоплата</option>
+        <option value="advance">аванс</option>
+        <option value="full_payment">полный расчет</option>
+        <option value="partial_payment">частичный расчет и кредит</option>
+        <option value="credit">кредит</option>
+        <option value="credit_payment">выплата по кредиту</option>
+     </param>
+    <param type="list" name="allowAll" default="0" label="Разрешить уведомления только с ip-адресов Mixplat" description="">
+        <option value="1">Только с Mixplat</option>
+        <option value="0">Без ограничений</option>
+    </param>
+    <param name="mixplatIpList" type="textarea" label="Список IP адресов Mixplat" description="Список разрешённых ip, с которых принимаются уведомления о изменениях статуса оплаты. Каждый ip на новой строке" default="185.77.233.27
+185.77.233.29"/>
+    <param name="countries" type="vmcountries"  scope="com_virtuemart" default="" label="Страны" description="Доступно для выбранных стран"/>
+    <param name="payment_currency" type="vmacceptedcurrency" default="" label="Валюта" description="" />
+    <param type="vmcategories" name="categories" label="Запрещённые категории"
+             default="" description="Для которых данный способ оплаты не доступен" multiple="true"/>
+    <param name="min_amount" type="text"  label="Минимальная сумма заказа" description="" />
+    <param name="max_amount" type="text"  label="Максимальная сумма заказа" description="" />
+    <param name="cost_per_transaction" type="text"  label="Наценка" description="" />
+    <param name="cost_percent_total" type="text"  label="Наценка(%)" description="" />
+    <param name="tax_id" type="vmtaxes" scope="com_virtuemart"  label="Налоги" description="" />
+    </params>
+</extension>
