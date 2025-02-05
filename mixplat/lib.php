@@ -2,7 +2,7 @@
 
 class MixplatLib
 {
-	const VERSION = "1.0.0";
+	const VERSION = "1.0.1";
 	const URL     = "https://api.mixplat.com/";
 
 	public static function calcPaymentSignature($data, $key)

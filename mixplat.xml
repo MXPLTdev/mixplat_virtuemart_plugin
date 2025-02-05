@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
     <name>Mixplat Payment</name>
-    <creationDate>April 2020</creationDate>
+    <creationDate>2025-02-05</creationDate>
     <author>ООО «Миксплат Процессинг»</author>
     <authorUrl>https://mixplat.ru/</authorUrl>
     <copyright>ООО «Миксплат Процессинг» ©</copyright>
     <license></license>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Приём оплаты по карте и мобильные платежи</description>
     <languages>
     </languages>
@@ -66,21 +66,29 @@
         <option value="5">единый сельскохозяйственный налог</option>
         <option value="6">патентная СН</option>
      </field>
-     <field type="list" name="tax" label="Ставка НДС на товары" default="1">
-        <option value="1">без НДС</option>
-        <option value="2">НДС по ставке 0%</option>
-        <option value="3">НДС чека по ставке 10%</option>
-        <option value="4">НДС чека по ставке 20%</option>
-        <option value="5">НДС чека по расчетной ставке 10/110</option>
-        <option value="6">НДС чека по расчетной ставке 20/120</option>
+     <field type="list" name="tax" label="Ставка НДС на товары" default="none">
+        <option value="none">без НДС</option>
+        <option value="vat0">НДС по ставке 0%</option>
+        <option value="vat10">НДС чека по ставке 10%</option>
+        <option value="vat20">НДС чека по ставке 20%</option>
+        <option value="vat110">НДС чека по расчетной ставке 10/110</option>
+        <option value="vat120">НДС чека по расчетной ставке 20/120</option>
+        <option value="vat5">НДС чека по ставке 5%</option>
+        <option value="vat7">НДС чека по ставке 7%</option>
+        <option value="vat105">НДС чека по расчетной ставке 5/105</option>
+        <option value="vat107">НДС чека по расчетной ставке 7/107</option>
      </field>
-     <field type="list" name="tax_delivery" label="Ставка НДС на доставку" default="1">
-        <option value="1">без НДС</option>
-        <option value="2">НДС по ставке 0%</option>
-        <option value="3">НДС чека по ставке 10%</option>
-        <option value="4">НДС чека по ставке 20%</option>
-        <option value="5">НДС чека по расчетной ставке 10/110</option>
-        <option value="6">НДС чека по расчетной ставке 20/120</option>
+     <field type="list" name="tax_delivery" label="Ставка НДС на доставку" default="none">
+        <option value="none">без НДС</option>
+        <option value="vat0">НДС по ставке 0%</option>
+        <option value="vat10">НДС чека по ставке 10%</option>
+        <option value="vat20">НДС чека по ставке 20%</option>
+        <option value="vat110">НДС чека по расчетной ставке 10/110</option>
+        <option value="vat120">НДС чека по расчетной ставке 20/120</option>
+        <option value="vat5">НДС чека по ставке 5%</option>
+        <option value="vat7">НДС чека по ставке 7%</option>
+        <option value="vat105">НДС чека по расчетной ставке 5/105</option>
+        <option value="vat107">НДС чека по расчетной ставке 7/107</option>
      </field>
      <field type="list" name="paymentSubjectType" default="commodity" label="Признак предмета расчета" description="категория товара для налоговой">
         <option value="commodity">товар</option>
